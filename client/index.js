@@ -111,6 +111,17 @@ const path = {
 
 console.log(path);
 
+const snake = [
+  { m: 99, t: 5 },
+  { m: 93, t: 5 },
+  { m: 95, t: 10 },
+];
+
+const ladder = [
+  { m: 6, t: 90 },
+  { m: 6, t: 12 },
+];
+
 const canvasSize = 500;
 const blockSize = canvasSize / 10;
 
@@ -163,5 +174,5 @@ drawCircle(
   "red"
 );
 
-drawPawn(1, 1, "green");
-drawPawn(3, 0, "red");
+// drawPawn(1, 1, "green");
+// drawPawn(3, 0, "red");
