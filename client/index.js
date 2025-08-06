@@ -109,7 +109,17 @@ const path = {
   100: { x: 0, y: 0 },
 };
 
-console.log(path);
+const drawSnake = () => {
+  ctx.beginPath();
+  ctx.lineWidth = "2";
+  ctx.fillStyle = "#dd7";
+  ctx.strokeStyle = "#fcf";
+  ctx.rect(50, 100, 500, 200);
+  ctx.fill();
+  ctx.stroke();
+};
+
+drawSnake();
 
 const snake = [
   { m: 99, t: 5 },
@@ -128,7 +138,7 @@ const blockSize = canvasSize / 10;
 const canvasEle = document.getElementById("canvas");
 canvasEle.height = canvasSize;
 canvasEle.width = canvasSize;
-canvasEle.style.backgroundColor = "#dd0";
+canvasEle.style.backgroundColor = "#868";
 const ctx = canvasEle.getContext("2d");
 
 const drawCircle = (x, y, r, fillColor) => {
