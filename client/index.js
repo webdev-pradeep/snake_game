@@ -109,18 +109,6 @@ const path = {
   100: { x: 0, y: 0 },
 };
 
-const drawSnake = () => {
-  ctx.beginPath();
-  ctx.lineWidth = "2";
-  ctx.fillStyle = "#dd7";
-  ctx.strokeStyle = "#fcf";
-  ctx.rect(50, 100, 500, 200);
-  ctx.fill();
-  ctx.stroke();
-};
-
-drawSnake();
-
 const snake = [
   { m: 99, t: 5 },
   { m: 93, t: 5 },
@@ -183,6 +171,18 @@ drawCircle(
   blockSize / 2 - blockSize / 5,
   "red"
 );
+
+const drawSnake = () => {
+  ctx.beginPath();
+  ctx.lineWidth = "2";
+  ctx.fillStyle = "#dd7";
+  ctx.strokeStyle = "#fcf";
+  ctx.rect(50, 100, 500, 200);
+  ctx.fill();
+  ctx.stroke();
+};
+
+drawSnake();
 
 // drawPawn(1, 1, "green");
 // drawPawn(3, 0, "red");
