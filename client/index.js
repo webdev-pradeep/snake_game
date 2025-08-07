@@ -1,4 +1,4 @@
-const socket = io("ws://localhost:5000/");
+const socket = io("ws://localhost:5000");
 
 socket.on("info", (msg) => {
   console.log(msg);
@@ -157,6 +157,19 @@ webpImage.onload = () => {
   ctx.drawImage(webpImage, 0, 0, canvasSize, canvasSize); // Example with custom position and size
 };
 
+const playBtnEle = document.getElementById("play");
+// playBtnEle.disabled = true
+playBtnEle.style.backgroundColor = "#fcc";
+playBtnEle.style.color = "#000";
+playBtnEle.addEventListener("click", () => {
+  socket.emit("play", "");
+});
+
+socket.on("play", (msg) => {
+  const diceValueEle = document.getElementById("dice");
+  diceValueEle.innerHTML = msg;
+});
+
 const drawCircle = (x, y, r, fillColor) => {
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
@@ -201,4 +214,3 @@ drawCircle(
 );
 
 drawPawn(1, "green");
-// drawPawn(3, 0, "red");
