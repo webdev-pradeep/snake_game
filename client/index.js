@@ -1,13 +1,26 @@
-const socket = io("ws://localhost:5000");
+const socket = io("ws://127.0.0.1:5000");
 
 const userName = prompt("enter your name");
 
+const turnEle = document.getElementById("turn");
+turnEle.innerHTML = " ";
+const diceValueEle = document.getElementById("dice");
+diceValueEle.innerHTML = "";
+
 socket.on("info", (msg) => {
   console.log(msg);
+  console.log(`Name: ${userName}, ID : ${socket.id}`);
 });
 
-socket.on("game", ({ client, turn }) => {
-  console.log(client, turn);
+socket.on("game", ({ diceValue, clients, turn }) => {
+  console.log(clients, turn, socket.id);
+  if (turn === socket.id) {
+    turnEle.innerHTML = "Your Turn";
+  } else {
+    turnEle.innerHTML = "";
+  }
+  diceValueEle.innerHTML = diceValue ? diceValue : "";
+  draw(clients);
 });
 
 socket.emit("info", userName);
@@ -171,11 +184,6 @@ playBtnEle.addEventListener("click", () => {
   socket.emit("play", "");
 });
 
-socket.on("play", (msg) => {
-  const diceValueEle = document.getElementById("dice");
-  diceValueEle.innerHTML = msg;
-});
-
 const drawCircle = (x, y, r, fillColor) => {
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
@@ -219,4 +227,12 @@ drawCircle(
   color
 );
 
-drawPawn(1, "green");
+const draw = (clients) => {
+  // clear screen
+  ctx.clearRect(0, 0, canvasSize, canvasSize);
+  ctx.drawImage(webpImage, 0, 0, canvasSize, canvasSize); // Example with custom position and size
+  // draw pawn
+  clients.forEach((e) => {
+    drawPawn(e.position, "green");
+  });
+};
