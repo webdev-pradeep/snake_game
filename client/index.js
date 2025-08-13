@@ -1,10 +1,16 @@
 const socket = io("ws://localhost:5000");
 
+const userName = prompt("enter your name");
+
 socket.on("info", (msg) => {
   console.log(msg);
 });
 
-socket.emit("info", "hello from client");
+socket.on("game", ({ client, turn }) => {
+  console.log(client, turn);
+});
+
+socket.emit("info", userName);
 
 const path = {
   1: { x: 0, y: 9 },
