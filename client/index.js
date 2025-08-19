@@ -205,12 +205,9 @@ const draw = (clients) => {
   ctx.drawImage(webpImage, 0, 0, canvasSize, canvasSize); // Example with custom position and size
   // draw pawn
   clients.forEach((e) => {
-    drawPawn(
-      pawnImageEleList[Math.floor(Math.random() * pawnImageEleList.length)],
-      e.position
-    );
+    drawPawn(e.position, "cyan");
     if (e.socketId === socket.id) {
-      drawPawn(pawnEle, e.position);
+      drawPawn(e.position, pwanColor);
     }
   });
 };
