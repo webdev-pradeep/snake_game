@@ -1,23 +1,36 @@
-const socket = io("ws://127.0.0.1:5000");
-
-const userName = prompt("enter your name");
+const maxNumberOfPawns = 12;
 
 const turnEle = document.getElementById("turn");
 turnEle.innerHTML = " ";
 const diceValueEle = document.getElementById("dice");
 diceValueEle.innerHTML = "";
 
+const userName = prompt("enter your name");
+const pawnValue =
+  prompt("enter number 0: blue, 1:yellow, 2:red, 3: green") || 0;
+
+const totalPawnImageEleList = [];
+for (let i = 0; i < maxNumberOfPawns; i++) {
+  const imageElement = new Image(`img${i}`);
+  imageElement.src = `./pawns/${i}.png`;
+  totalPawnImageEleList.push(imageElement);
+}
+const pawnEle = totalPawnImageEleList[pawnValue];
+const pawnImageEleList = totalPawnImageEleList.filter((e) => e !== pawnEle);
+
+const socket = io("ws://192.168.1.36:5000");
+
 socket.on("info", (msg) => {
   console.log(msg);
-  console.log(`Name: ${userName}, ID : ${socket.id}`);
+  console.log(`Name: ${userName}, ID: ${socket.id} `);
 });
-
 socket.on("game", ({ diceValue, clients, turn }) => {
   console.log(clients, turn, socket.id);
   if (turn === socket.id) {
     turnEle.innerHTML = "Your Turn";
   } else {
-    turnEle.innerHTML = "";
+    const c = clients.filter((e) => e.socketId == turn);
+    turnEle.innerHTML = `Turn: ${c[0].name} `;
   }
   diceValueEle.innerHTML = diceValue ? diceValue : "";
   draw(clients);
@@ -128,16 +141,16 @@ const path = {
   100: { x: 0, y: 0 },
 };
 
-const canvasSize = 500;
+const canvasSize = 600;
 const blockSize = canvasSize / 10;
 
 const webpImage = new Image();
-webpImage.src = "map.png"; // Replace with your WebP image path
-
+webpImage.src = "../map.png"; // Replace with your WebP image path
 const canvasEle = document.getElementById("canvas");
 canvasEle.height = canvasSize;
 canvasEle.width = canvasSize;
 const ctx = canvasEle.getContext("2d");
+
 webpImage.onload = () => {
   ctx.drawImage(webpImage, 0, 0, canvasSize, canvasSize); // Example with custom position and size
 };
@@ -155,8 +168,8 @@ const drawCircle = (x, y, r, fillColor) => {
   ctx.arc(x, y, r, 0, 2 * Math.PI);
   ctx.fillStyle = fillColor;
   ctx.fill();
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = "blue";
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = "white";
   ctx.stroke();
 };
 
@@ -168,17 +181,17 @@ const drawLine = (x1, y1, x2, y2) => {
   ctx.stroke();
 };
 
-const drawPawn = (pathNum, color) => {
-  drawCircle(
-    blockSize / 2 + blockSize * path[pathNum].x,
-    blockSize / 2 + blockSize * path[pathNum].y,
-    blockSize / 2 - blockSize / 6,
-    color
+const drawPawn = (img, pathNum) => {
+  ctx.drawImage(
+    img,
+    blockSize / 6 + blockSize * path[pathNum].x,
+    blockSize / 6 + blockSize * path[pathNum].y,
+    blockSize - blockSize / 3,
+    blockSize - blockSize / 3
   );
 };
 
 // y axis line draw
-
 for (let i = 1; i < 10; i++) {
   drawLine(blockSize * i, 0, blockSize * i, canvasSize);
 }
@@ -186,19 +199,18 @@ for (let i = 1; i < 10; i++) {
   drawLine(0, blockSize * i, canvasSize, blockSize * i);
 }
 
-drawCircle(
-  blockSize / 2 + blockSize * 2,
-  blockSize / 2 + blockSize * 1,
-  blockSize / 2 - blockSize / 6,
-  color
-);
-
 const draw = (clients) => {
   // clear screen
   ctx.clearRect(0, 0, canvasSize, canvasSize);
   ctx.drawImage(webpImage, 0, 0, canvasSize, canvasSize); // Example with custom position and size
   // draw pawn
   clients.forEach((e) => {
-    drawPawn(e.position, "green");
+    drawPawn(
+      pawnImageEleList[Math.floor(Math.random() * pawnImageEleList.length)],
+      e.position
+    );
+    if (e.socketId === socket.id) {
+      drawPawn(pawnEle, e.position);
+    }
   });
 };
